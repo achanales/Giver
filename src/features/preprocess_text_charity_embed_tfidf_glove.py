@@ -33,7 +33,7 @@ stemmer = SnowballStemmer("english")
 '''
 Write a function to run word embedding pre-processing on df
 '''
-def word_embed_charity(df,pca_comp =8,word_min=5, word_max_perc=.2 ):
+def word_embed_charity(df,word_min=5, word_max_perc=.2 ):
     
     #Extract mission descritptions
     mission_text = df['description'].astype('str')

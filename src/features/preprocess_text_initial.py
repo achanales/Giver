@@ -28,3 +28,11 @@ def preprocess(text):
             result.append(lemmatize_stemming(token))
             
     return result
+
+def preprocess_docs(docs):
+    result = []
+    
+    for doc in docs:
+        result.append(preprocess(doc))
+    
+    return result

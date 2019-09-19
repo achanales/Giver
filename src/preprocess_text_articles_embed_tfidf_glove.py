@@ -27,7 +27,7 @@ import numpy as np
 np.random.seed(400)
 
 
-def word_embed_charity(processed_text,doc_dict,tfidf_emb_vecs):
+def word_embed_article(processed_text,doc_dict,tfidf_emb_vecs):
     
     doc_bow = docs_dict.doc2bow(processed_text)
     
