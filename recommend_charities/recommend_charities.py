@@ -1,9 +1,7 @@
 import json
 import boto3
-
 import pandas as pd
 import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
 import pickle
 
 # NLP Packages
@@ -11,30 +9,40 @@ import spacy
 from gensim.corpora import Dictionary
 from gensim.models.tfidfmodel import TfidfModel
 from gensim.matutils import sparse2full
-import pdb
 
 nlp  = spacy.load('en_core_web_md')
 
 
 def lambda_handler(event, context):
 
+	# Exctract headling 
 	headline = event['headline']
 
+	# Load Trained Charity Model
 	with open('/Users/avi/Dropbox/Insight/Project/insight_project/data/processed/charity_model_min_0_max_0.5.pickle', 'rb') as handle:
 		charity_model = pickle.load(handle)
 
+	# Load Charity dataset
 	file_name = '/Users/avi/Dropbox/Insight/Project/insight_project/data/interim/charity_data_cleaned.csv'
 	all_charity = pd.read_csv(file_name)
 
+	# Unpack model variables from pickle
 	charity_docs_dict = charity_model['charity_docs_dict']
 	charity_model_tfidf = charity_model['charity_model_tfidf']
 	charity_tfidf_emb_vecs =  charity_model['charity_tfidf_emb_vecs']
 	charity_docs_emb =  charity_model['charity_docs_emb']
 
+	# Preprocess headline and embed in setence vector
 	headline_emb = process_embed_text(headline,charity_docs_dict,charity_model_tfidf,charity_tfidf_emb_vecs)
+
+	# Compute the similarity of headline to all mission statements and return top 3 ranked charities scores and indices
 	topN_scores, topN_indices = compute_similarity_output_n(headline_emb,charity_docs_emb,3)
+
+	# Lookup top charities in charity database and retreive relevant information
 	topN_charities = topN_ranked_charities(all_charity, topN_scores, topN_indices)
 
+
+	# Output JSON file of top ranked charities including ['name','category','subcategory','score','description', 'sim_score']
 	return {
         'statusCode': 200,
         'body': topN_charities.to_json(orient='index')
@@ -77,6 +85,10 @@ def process_embed_text(text,charity_docs_dict,charity_model_tfidf,charity_tfidf_
     
     
     return headline_emb
+
+def cosine_simalirty(vec1,vec2):
+
+	
 
 def compute_similarity_output_n(headline_emb,charity_docs_emb,topn):
     
