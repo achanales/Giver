@@ -8,6 +8,7 @@ np.random.seed(400)
 from gensim.corpora import Dictionary
 from gensim.matutils import sparse2full
 import spacy
+from nlp_functions import preprocess_spacy
 nlp  = spacy.load('en_core_web_md')
 
 
@@ -21,7 +22,7 @@ def preprocess_spacy(raw_text):
     doc = nlp(raw_text)
 
     # Remove organizations, people, date, and money entities from document text
-    tokens_ner = [entity.text for entity in doc.ents if entity.label_ in {'DATE', 'PERSON', 'ORG', 'MONEY'}]
+    tokens_ner = [entity.text for entity in doc.ents if entity.label_ in {'DATE', 'PERSON', 'ORG', 'MONEY', 'GPE'}]
 
     for term in tokens_ner:
         raw_text = raw_text.replace(term, "")
@@ -48,7 +49,7 @@ def preprocess_docs(docs):
 ## Document Embedding fucntions ######
 ##################################
 
-def doc_embed_charity(processed_docs, word_min=5, word_max_perc=.8):
+def doc_embed_charity_notfidf(processed_docs, word_min=5, word_max_perc=.8):
     'Takes a list of preprocessed texts and returns an embedding vector for each document, a dictionary of the words within the corpus, and the glove vectors for each word in the corpus'
 
     # Create dictionary from corpus
