@@ -39,5 +39,5 @@ all_charity_use = all_charity_use[['name', 'score','description','description_no
 
 # Save cleaned dataset
 print('Saving cleaned charity data')
-file_save = os.path.join(root_dir, "data","processed", "charity_data_cleaned.csv")
+file_save = os.path.join(root_dir, "data","processed", "charity_data_clean.csv")
 all_charity_use.to_csv(file_save)
