@@ -8,7 +8,6 @@ np.random.seed(400)
 from gensim.corpora import Dictionary
 from gensim.matutils import sparse2full
 import spacy
-from nlp_functions import preprocess_spacy
 nlp  = spacy.load('en_core_web_md')
 
 
@@ -43,6 +42,8 @@ def preprocess_docs(docs):
 
     for doc in docs:
         result.append(preprocess_spacy(doc))
+        
+    return result
 
 
 ##################################
